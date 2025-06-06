@@ -38,6 +38,7 @@
             color: var(--text-light);
             line-height: 1.6;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
         /* Navigation */
@@ -90,7 +91,7 @@
             position: relative;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             color: var(--primary-color);
         }
 
@@ -105,7 +106,7 @@
             transition: width 0.3s ease;
         }
 
-        .nav-links a:hover::after {
+        .nav-links a:hover::after, .nav-links a.active::after {
             width: 100%;
         }
 
@@ -132,6 +133,37 @@
             color: var(--text-light);
             font-size: 1.5rem;
             cursor: pointer;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 999;
+        }
+
+        .mobile-nav.active {
+            display: block;
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+            padding: 1rem 2rem;
+        }
+
+        .mobile-nav ul li {
+            margin: 1rem 0;
+        }
+
+        .mobile-nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
         }
 
         /* Hero Section */
@@ -251,6 +283,13 @@
             border: 4px solid var(--primary-color);
             box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
             transition: transform 0.3s ease;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
         }
 
         .profile-image:hover {
@@ -260,9 +299,14 @@
         /* Section Styles */
         .section {
             padding: 5rem 0;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+
+        .section.fade-in {
             opacity: 0;
             transform: translateY(50px);
-            transition: all 0.8s ease;
         }
 
         .section.visible {
@@ -695,17 +739,29 @@
         <div class="nav-container">
             <div class="logo">Portfolio</div>
             <ul class="nav-links">
-                <li><a href="#home">HOME</a></li>
-                <li><a href="#about">ABOUT</a></li>
-                <li><a href="#skills">SKILLS</a></li>
-                <li><a href="#experience">EXPERIENCE</a></li>
-                <li><a href="#education">EDUCATION</a></li>
-                <li><a href="#contact">CONTACT</a></li>
+                <li><a href="#home" class="nav-link">HOME</a></li>
+                <li><a href="#about" class="nav-link">ABOUT</a></li>
+                <li><a href="#skills" class="nav-link">SKILLS</a></li>
+                <li><a href="#experience" class="nav-link">EXPERIENCE</a></li>
+                <li><a href="#education" class="nav-link">EDUCATION</a></li>
+                <li><a href="#contact" class="nav-link">CONTACT</a></li>
                 <li><button class="theme-toggle" onclick="toggleTheme()">🌙</button></li>
             </ul>
-            <button class="mobile-menu">☰</button>
+            <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
         </div>
     </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <ul>
+            <li><a href="#home" class="nav-link" onclick="closeMobileMenu()">HOME</a></li>
+            <li><a href="#about" class="nav-link" onclick="closeMobileMenu()">ABOUT</a></li>
+            <li><a href="#skills" class="nav-link" onclick="closeMobileMenu()">SKILLS</a></li>
+            <li><a href="#experience" class="nav-link" onclick="closeMobileMenu()">EXPERIENCE</a></li>
+            <li><a href="#education" class="nav-link" onclick="closeMobileMenu()">EDUCATION</a></li>
+            <li><a href="#contact" class="nav-link" onclick="closeMobileMenu()">CONTACT</a></li>
+        </ul>
+    </div>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -723,4 +779,1291 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAEsASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAgIDAQEBAQAAAAAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK
+                <div class="profile-image">NK</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Certifications</div>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>I am a passionate DevOps/SRE Engineer with extensive experience in cloud infrastructure, automation, and scalable systems. Currently working at Electronic Arts, I specialize in building robust, efficient, and secure infrastructure solutions.</p>
+                    
+                    <p>My expertise spans across various cloud platforms, containerization technologies, and infrastructure-as-code tools. I have a strong background in monitoring, observability, and incident response, ensuring high availability and performance of critical systems.</p>
+                    
+                    <p>I'm constantly learning and adapting to new technologies, with a focus on improving system reliability, reducing operational overhead, and enabling development teams to deliver faster and more efficiently.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Skills & Technologies</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Cloud Platforms</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Azure</span>
+                        <span class="skill-tag">GCP</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Infrastructure as Code</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">CloudFormation</span>
+                        <span class="skill-tag">Ansible</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Containerization</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Helm</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>CI/CD</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Jenkins</span>
+                        <span class="skill-tag">GitLab CI</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Monitoring & Observability</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">ELK Stack</span>
+                        <span class="skill-tag">Shoreline</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Programming</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">Go</span>
+                        <span class="skill-tag">YAML</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <div class="experience-timeline">
+                <div class="experience-item">
+                    <div class="experience-date">2022 - Present</div>
+                    <h3 class="experience-title">DevOps/SRE Engineer</h3>
+                    <div class="experience-company">Electronic Arts</div>
+                    <p>Leading infrastructure automation and reliability initiatives for gaming platforms. Implemented Terraform-based infrastructure provisioning, reducing deployment time by 60%. Managed Kubernetes clusters serving millions of users.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2020 - 2022</div>
+                    <h3 class="experience-title">Cloud Infrastructure Engineer</h3>
+                    <div class="experience-company">Tech Solutions Inc.</div>
+                    <p>Designed and implemented cloud-native solutions on AWS. Built CI/CD pipelines using Jenkins and GitLab CI. Implemented monitoring and alerting systems using Prometheus and Grafana.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2018 - 2020</div>
+                    <h3 class="experience-title">System Administrator</h3>
+                    <div class="experience-company">Digital Innovations Ltd.</div>
+                    <p>Managed on-premises and cloud infrastructure. Automated routine tasks using Python and Bash scripting. Implemented backup and disaster recovery solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Education & Certifications</h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <h3 class="education-degree">Bachelor of Technology</h3>
+                    <div class="education-school">Computer Science Engineering</div>
+                    <div class="education-year">2014 - 2018</div>
+                </div>
+                <div class="education-card">
+                    <h3 class="education-degree">AWS Solutions Architect</h3>
+                    <div class="education-school">Amazon Web Services</div>
+                    <div class="education-year">2021</div>
+                </div>
+                <div class="education-card">
+                    <h3 class="education-degree">Certified Kubernetes Administrator</h3>
+                    <div class="education-school">Cloud Native Computing Foundation</div>
+                    <div class="education-year">2022</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <h4>
+                                // Smooth scroll for nav links
+                                document.querySelectorAll('.nav-link').forEach(link => {
+                                link.addEventListener('click', function(e) {
+                                const href = this.getAttribute('href');
+                                if (href.startsWith('#')) {
+                                e.preventDefault();
+                                const target = document.querySelector(href);
+                                if (target) {
+                                target.scrollIntoView({ behavior: 'smooth' });
+                                }
+                                // Update active class
+                                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                                this.classList.add('active');
+                                }
+                                });
+                                // Optional: Highlight nav link on scroll
+                                const sections = document.querySelectorAll('section[id]');
+                                window.addEventListener('scroll', () => {
+                                let scrollPos = window.scrollY + 100;
+                                sections.forEach(section => {
+                                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                                document.querySelectorAll('.nav-link').forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === '#' + section.id) {
+                                link.classList.add('active');
+                                }
+                                });
+                                }
+                                });
+                                });
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-item:hover {
+                        transform: translateX(10px);
+                    }
+
+                    .contact-icon {
+                        width: 50px;
+                        height: 50px;
+                        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 1.2rem;
+                    }
+
+                    .contact-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.5rem;
+                    }
+
+                    .form-group {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+
+                    .form-group label {
+                        font-weight: 600;
+                        color: var(--text-light);
+                    }
+
+                    .form-group input,
+                    .form-group textarea {
+                        padding: 1rem;
+                        border: 2px solid var(--border-color);
+                        border-radius: 10px;
+                        background: var(--card-bg);
+                        color: var(--text-light);
+                        font-size: 1rem;
+                        transition: border-color 0.3s ease;
+                    }
+
+                    .form-group input:focus,
+                    .form-group textarea:focus {
+                        outline: none;
+                        border-color: var(--primary-color);
+                    }
+
+                    .form-group textarea {
+                        resize: vertical;
+                        min-height: 120px;
+                    }
+
+                    /* Footer */
+                    .footer {
+                        background: var(--bg-darker);
+                        padding: 3rem 0 1rem;
+                        border-top: 1px solid var(--border-color);
+                        text-align: center;
+                    }
+
+                    .social-links {
+                        display: flex;
+                        justify-content: center;
+                        gap: 1rem;
+                        margin-bottom: 2rem;
+                    }
+
+                    .social-link {
+                        width: 50px;
+                        height: 50px;
+                        background: var(--card-bg);
+                        border: 2px solid var(--border-color);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--text-light);
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                        font-size: 1.2rem;
+                    }
+
+                    .social-link:hover {
+                        border-color: var(--primary-color);
+                        color: var(--primary-color);
+                        transform: translateY(-3px);
+                    }
+
+                    /* Animations */
+                    @keyframes slideInLeft {
+                        from {
+                            opacity: 0;
+                            transform: translateX(-50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    @keyframes slideInRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(30px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    /* Responsive Design */
+                    @media (max-width: 768px) {
+                        .nav-links {
+                            display: none;
+                        }
+
+                        .mobile-menu {
+                            display: block;
+                        }
+
+                        .hero-container {
+                            grid-template-columns: 1fr;
+                            text-align: center;
+                            gap: 2rem;
+                        }
+
+                        .hero-title {
+                            font-size: 2.5rem;
+                        }
+
+                        .about-content {
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+
+                        .contact-content {
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+
+                        .profile-image {
+                            width: 250px;
+                            height: 250px;
+                        }
+
+                        .experience-timeline {
+                            padding-left: 1rem;
+                        }
+
+                        .experience-item {
+                            margin-left: 1rem;
+                        }
+                    }
+
+                    @media (max-width: 480px) {
+                        .nav-container {
+                            padding: 0 1rem;
+                        }
+
+                        .container {
+                            padding: 0 1rem;
+                        }
+
+                        .hero-title {
+                            font-size: 2rem;
+                        }
+
+                        .hero-subtitle {
+                            font-size: 1.2rem;
+                        }
+
+                        .section-title {
+                            font-size: 2rem;
+                        }
+
+                        .profile-image {
+                            width: 200px;
+                            height: 200px;
+                        }
+                    }
+                </style>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Certifications</div>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>I am a passionate DevOps/SRE Engineer with extensive experience in cloud infrastructure, automation, and scalable systems. Currently working at Electronic Arts, I specialize in building robust, efficient, and secure infrastructure solutions.</p>
+                    
+                    <p>My expertise spans across various cloud platforms, containerization technologies, and infrastructure-as-code tools. I have a strong background in monitoring, observability, and incident response, ensuring high availability and performance of critical systems.</p>
+                    
+                    <p>I'm constantly learning and adapting to new technologies, with a focus on improving system reliability, reducing operational overhead, and enabling development teams to deliver faster and more efficiently.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Skills & Technologies</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Cloud Platforms</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Azure</span>
+                        <span class="skill-tag">GCP</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Infrastructure as Code</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">CloudFormation</span>
+                        <span class="skill-tag">Ansible</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Containerization</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Helm</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>CI/CD</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Jenkins</span>
+                        <span class="skill-tag">GitLab CI</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Monitoring & Observability</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">ELK Stack</span>
+                        <span class="skill-tag">Shoreline</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Programming</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">Go</span>
+                        <span class="skill-tag">YAML</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <div class="experience-timeline">
+                <div class="experience-item">
+                    <div class="experience-date">2022 - Present</div>
+                    <h3 class="experience-title">DevOps/SRE Engineer</h3>
+                    <div class="experience-company">Electronic Arts</div>
+                    <p>Leading infrastructure automation and reliability initiatives for gaming platforms. Implemented Terraform-based infrastructure provisioning, reducing deployment time by 60%. Managed Kubernetes clusters serving millions of users.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2020 - 2022</div>
+                    <h3 class="experience-title">Cloud Infrastructure Engineer</h3>
+                    <div class="experience-company">Tech Solutions Inc.</div>
+                    <p>Designed and implemented cloud-native solutions on AWS. Built CI/CD pipelines using Jenkins and GitLab CI. Implemented monitoring and alerting systems using Prometheus and Grafana.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2018 - 2020</div>
+                    <h3 class="experience-title">System Administrator</h3>
+                    <div class="experience-company">Digital Innovations Ltd.</div>
+                    <p>Managed on-premises and cloud infrastructure. Automated routine tasks using Python and Bash scripting. Implemented backup and disaster recovery solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Education & Certifications</h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <h3 class="education-degree">Bachelor of Technology</h3>
+                    <div class="education-school">Computer Science Engineering</div>
+                    <div class="education-year">2014 - 2018</div>
+                </div>
+                <div class="education-card">
+                    <h3 class="education-degree">AWS Solutions Architect</h3>
+                    <div class="education-school">Amazon Web Services</div>
+                    <div class="education-year">2021</div>
+                </div>
+                <div class="education-card">
+                    <h3 class="education-degree">Certified Kubernetes Administrator</h3>
+                    <div class="education-school">Cloud Native Computing Foundation</div>
+                    <div class="education-year">2022</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <h4>
+                                // Smooth scroll for nav links
+                                document.querySelectorAll('.nav-link').forEach(link => {
+                                link.addEventListener('click', function(e) {
+                                const href = this.getAttribute('href');
+                                if (href.startsWith('#')) {
+                                e.preventDefault();
+                                const target = document.querySelector(href);
+                                if (target) {
+                                target.scrollIntoView({ behavior: 'smooth' });
+                                }
+                                // Update active class
+                                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                                this.classList.add('active');
+                                }
+                                });
+                                // Optional: Highlight nav link on scroll
+                                const sections = document.querySelectorAll('section[id]');
+                                window.addEventListener('scroll', () => {
+                                let scrollPos = window.scrollY + 100;
+                                sections.forEach(section => {
+                                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                                document.querySelectorAll('.nav-link').forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === '#' + section.id) {
+                                link.classList.add('active');
+                                }
+                                });
+                                }
+                                });
+                                });
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-item:hover {
+                        transform: translateX(10px);
+                    }
+
+                    .contact-icon {
+                        width: 50px;
+                        height: 50px;
+                        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 1.2rem;
+                    }
+
+                    .contact-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.5rem;
+                    }
+
+                    .form-group {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+
+                    .form-group label {
+                        font-weight: 600;
+                        color: var(--text-light);
+                    }
+
+                    .form-group input,
+                    .form-group textarea {
+                        padding: 1rem;
+                        border: 2px solid var(--border-color);
+                        border-radius: 10px;
+                        background: var(--card-bg);
+                        color: var(--text-light);
+                        font-size: 1rem;
+                        transition: border-color 0.3s ease;
+                    }
+
+                    .form-group input:focus,
+                    .form-group textarea:focus {
+                        outline: none;
+                        border-color: var(--primary-color);
+                    }
+
+                    .form-group textarea {
+                        resize: vertical;
+                        min-height: 120px;
+                    }
+
+                    /* Footer */
+                    .footer {
+                        background: var(--bg-darker);
+                        padding: 3rem 0 1rem;
+                        border-top: 1px solid var(--border-color);
+                        text-align: center;
+                    }
+
+                    .social-links {
+                        display: flex;
+                        justify-content: center;
+                        gap: 1rem;
+                        margin-bottom: 2rem;
+                    }
+
+                    .social-link {
+                        width: 50px;
+                        height: 50px;
+                        background: var(--card-bg);
+                        border: 2px solid var(--border-color);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--text-light);
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                        font-size: 1.2rem;
+                    }
+
+                    .social-link:hover {
+                        border-color: var(--primary-color);
+                        color: var(--primary-color);
+                        transform: translateY(-3px);
+                    }
+
+                    /* Animations */
+                    @keyframes slideInLeft {
+                        from {
+                            opacity: 0;
+                            transform: translateX(-50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    @keyframes slideInRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(30px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    /* Responsive Design */
+                    @media (max-width: 768px) {
+                        .nav-links {
+                            display: none;
+                        }
+
+                        .mobile-menu {
+                            display: block;
+                        }
+
+                        .hero-container {
+                            grid-template-columns: 1fr;
+                            text-align: center;
+                            gap: 2rem;
+                        }
+
+                        .hero-title {
+                            font-size: 2.5rem;
+                        }
+
+                        .about-content {
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+
+                        .contact-content {
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+
+                        .profile-image {
+                            width: 250px;
+                            height: 250px;
+                        }
+
+                        .experience-timeline {
+                            padding-left: 1rem;
+                        }
+
+                        .experience-item {
+                            margin-left: 1rem;
+                        }
+                    }
+
+                    @media (max-width: 480px) {
+                        .nav-container {
+                            padding: 0 1rem;
+                        }
+
+                        .container {
+                            padding: 0 1rem;
+                        }
+
+                        .hero-title {
+                            font-size: 2rem;
+                        }
+
+                        .hero-subtitle {
+                            font-size: 1.2rem;
+                        }
+
+                        .section-title {
+                            font-size: 2rem;
+                        }
+
+                        .profile-image {
+                            width: 200px;
+                            height: 200px;
+                        }
+                    }
+                </style>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Certifications</div>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>I am a passionate DevOps/SRE Engineer with extensive experience in cloud infrastructure, automation, and scalable systems. Currently working at Electronic Arts, I specialize in building robust, efficient, and secure infrastructure solutions.</p>
+                    
+                    <p>My expertise spans across various cloud platforms, containerization technologies, and infrastructure-as-code tools. I have a strong background in monitoring, observability, and incident response, ensuring high availability and performance of critical systems.</p>
+                    
+                    <p>I'm constantly learning and adapting to new technologies, with a focus on improving system reliability, reducing operational overhead, and enabling development teams to deliver faster and more efficiently.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Skills & Technologies</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Cloud Platforms</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Azure</span>
+                        <span class="skill-tag">GCP</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Infrastructure as Code</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">CloudFormation</span>
+                        <span class="skill-tag">Ansible</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Containerization</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Helm</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>CI/CD</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Jenkins</span>
+                        <span class="skill-tag">GitLab CI</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Monitoring & Observability</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">ELK Stack</span>
+                        <span class="skill-tag">Shoreline</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Programming</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">Go</span>
+                        <span class="skill-tag">YAML</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <div class="experience-timeline">
+                <div class="experience-item">
+                    <div class="experience-date">2022 - Present</div>
+                    <h3 class="experience-title">DevOps/SRE Engineer</h3>
+                    <div class="experience-company">Electronic Arts</div>
+                    <p>Leading infrastructure automation and reliability initiatives for gaming platforms. Implemented Terraform-based infrastructure provisioning, reducing deployment time by 60%. Managed Kubernetes clusters serving millions of users.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2020 - 2022</div>
+                    <h3 class="experience-title">Cloud Infrastructure Engineer</h3>
+                    <div class="experience-company">Tech Solutions Inc.</div>
+                    <p>Designed and implemented cloud-native solutions on AWS. Built CI/CD pipelines using Jenkins and GitLab CI. Implemented monitoring and alerting systems using Prometheus and Grafana.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2018 - 2020</div>
+                    <h3 class="experience-title">System Administrator</h3>
+                    <div class="experience-company">Digital Innovations Ltd.</div>
+                    <p>Managed on-premises and cloud infrastructure. Automated routine tasks using Python and Bash scripting. Implemented backup and disaster recovery solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Education & Certifications</h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <h3 class="education-degree">Bachelor of Technology</h3>
+                    <div class="education-school">Computer Science Engineering</div>
+                    <div class="education-year">2014 - 2018</div>
+                </div>
+                <div class="education-card">
+                    <h3 class="education-degree">AWS Solutions Architect</h3>
+                    <div class="education-school">Amazon Web Services</div>
+                    <div class="education-year">2021</div>
+                </div>
+                <div class="education-card">
+                    <h3 class="education-degree">Certified Kubernetes Administrator</h3>
+                    <div class="education-school">Cloud Native Computing Foundation</div>
+                    <div class="education-year">2022</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <h4>
+                                // Smooth scroll for nav links
+                                document.querySelectorAll('.nav-link').forEach(link => {
+                                link.addEventListener('click', function(e) {
+                                const href = this.getAttribute('href');
+                                if (href.startsWith('#')) {
+                                e.preventDefault();
+                                const target = document.querySelector(href);
+                                if (target) {
+                                target.scrollIntoView({ behavior: 'smooth' });
+                                }
+                                // Update active class
+                                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                                this.classList.add('active');
+                                }
+                                });
+                                // Optional: Highlight nav link on scroll
+                                const sections = document.querySelectorAll('section[id]');
+                                window.addEventListener('scroll', () => {
+                                let scrollPos = window.scrollY + 100;
+                                sections.forEach(section => {
+                                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                                document.querySelectorAll('.nav-link').forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === '#' + section.id) {
+                                link.classList.add('active');
+                                }
+                                });
+                                }
+                                });
+                                });
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-item:hover {
+                        transform: translateX(10px);
+                    }
+
+                    .contact-icon {
+                        width: 50px;
+                        height: 50px;
+                        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 1.2rem;
+                    }
+
+                    .contact-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.5rem;
+                    }
+
+                    .form-group {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+
+                    .form-group label {
+                        font-weight: 600;
+                        color: var(--text-light);
+                    }
+
+                    .form-group input,
+                    .form-group textarea {
+                        padding: 1rem;
+                        border: 2px solid var(--border-color);
+                        border-radius: 10px;
+                        background: var(--card-bg);
+                        color: var(--text-light);
+                        font-size: 1rem;
+                        transition: border-color 0.3s ease;
+                    }
+
+                    .form-group input:focus,
+                    .form-group textarea:focus {
+                        outline: none;
+                        border-color: var(--primary-color);
+                    }
+
+                    .form-group textarea {
+                        resize: vertical;
+                        min-height: 120px;
+                    }
+
+                    /* Footer */
+                    .footer {
+                        background: var(--bg-darker);
+                        padding: 3rem 0 1rem;
+                        border-top: 1px solid var(--border-color);
+                        text-align: center;
+                    }
+
+                    .social-links {
+                        display: flex;
+                        justify-content: center;
+                        gap: 1rem;
+                        margin-bottom: 2rem;
+                    }
+
+                    .social-link {
+                        width: 50px;
+                        height: 50px;
+                        background: var(--card-bg);
+                        border: 2px solid var(--border-color);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: var(--text-light);
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                        font-size: 1.2rem;
+                    }
+
+                    .social-link:hover {
+                        border-color: var(--primary-color);
+                        color: var(--primary-color);
+                        transform: translateY(-3px);
+                    }
+
+                    /* Animations */
+                    @keyframes slideInLeft {
+                        from {
+                            opacity: 0;
+                            transform: translateX(-50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    @keyframes slideInRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(50px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(30px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    /* Responsive Design */
+                    @media (max-width: 768px) {
+                        .nav-links {
+                            display: none;
+                        }
+
+                        .mobile-menu {
+                            display: block;
+                        }
+
+                        .hero-container {
+                            grid-template-columns: 1fr;
+                            text-align: center;
+                            gap: 2rem;
+                        }
+
+                        .hero-title {
+                            font-size: 2.5rem;
+                        }
+
+                        .about-content {
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+
+                        .contact-content {
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+
+                        .profile-image {
+                            width: 250px;
+                            height: 250px;
+                        }
+
+                        .experience-timeline {
+                            padding-left: 1rem;
+                        }
+
+                        .experience-item {
+                            margin-left: 1rem;
+                        }
+                    }
+
+                    @media (max-width: 480px) {
+                        .nav-container {
+                            padding: 0 1rem;
+                        }
+
+                        .container {
+                            padding: 0 1rem;
+                        }
+
+                        .hero-title {
+                            font-size: 2rem;
+                        }
+
+                        .hero-subtitle {
+                            font-size: 1.2rem;
+                        }
+
+                        .section-title {
+                            font-size: 2rem;
+                        }
+
+                        .profile-image {
+                            width: 200px;
+                            height: 200px;
+                        }
+                    }
+                </style>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Certifications</div>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>I am a passionate DevOps/SRE Engineer with extensive experience in cloud infrastructure, automation, and scalable systems. Currently working at Electronic Arts, I specialize in building robust, efficient, and secure infrastructure solutions.</p>
+                    
+                    <p>My expertise spans across various cloud platforms, containerization technologies, and infrastructure-as-code tools. I have a strong background in monitoring, observability, and incident response, ensuring high availability and performance of critical systems.</p>
+                    
+                    <p>I'm constantly learning and adapting to new technologies, with a focus on improving system reliability, reducing operational overhead, and enabling development teams to deliver faster and more efficiently.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Skills & Technologies</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Cloud Platforms</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Azure</span>
+                        <span class="skill-tag">GCP</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Infrastructure as Code</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">CloudFormation</span>
+                        <span class="skill-tag">Ansible</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Containerization</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Helm</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>CI/CD</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Jenkins</span>
+                        <span class="skill-tag">GitLab CI</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Monitoring & Observability</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">ELK Stack</span>
+                        <span class="skill-tag">Shoreline</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Programming</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">Go</span>
+                        <span class="skill-tag">YAML</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section fade-in">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <div class="experience-timeline">
+                <div class="experience-item">
+                    <div class="experience-date">2022 - Present</div>
+                    <h3 class="experience-title">DevOps/SRE Engineer</h3>
+                    <div class="experience-company">Electronic Arts</div>
+                    <p>Leading infrastructure automation and reliability initiatives for gaming platforms. Implemented Terraform-based infrastructure provisioning, reducing deployment time by 60%. Managed Kubernetes clusters serving millions of users.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2020 - 2022</div>
+                    <h3 class="experience-title">Cloud Infrastructure Engineer</h3>
+                    <div class="experience-company">Tech Solutions Inc.</div>
+                    <p>Designed and implemented cloud-native solutions on AWS. Built CI/CD pipelines using Jenkins and GitLab CI. Implemented monitoring and alerting systems using Prometheus and Grafana.</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-date">2018 - 2020</div>
+                    <h3 class="experience-title">System Administrator</h3>
+                    <div class="experience-company">Digital Innovations Ltd.</div>
+                    <p>Managed on-premises and cloud infrastructure. Automated routine tasks using Python and Bash scripting. Implemented backup and disaster recovery solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section fade-in"
