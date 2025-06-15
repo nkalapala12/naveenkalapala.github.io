@@ -562,6 +562,7 @@
             border-radius: 20px;
             padding: 2.5rem;
             box-shadow: 0 15px 40px var(--shadow);
+            position: relative;
         }
 
         .contact-form h3 {
@@ -612,6 +613,48 @@
             padding: 1.2rem;
             font-size: 1.2rem;
             margin-top: 1rem;
+        }
+
+        .form-status {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 10;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .form-status.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .form-status i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-status h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-status p {
+            font-size: 1.1rem;
+            max-width: 80%;
+            line-height: 1.6;
         }
 
         /* Footer */
@@ -1048,7 +1091,7 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section with Formspree Integration -->
     <section class="contact" id="contact">
         <div class="container">
             <h2 class="section-title">Get in Touch</h2>
@@ -1093,21 +1136,27 @@
                 </div>
                 <div class="contact-form">
                     <h3>Send Me a Message</h3>
-                    <form>
+                    <form id="contact-form" action="https://formspree.io/f/xnnvvvnj" method="POST">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" id="name" required>
+                            <input type="text" id="name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" required>
+                            <input type="email" id="email" name="email" required>
                         </div>
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <textarea id="message" required></textarea>
+                            <textarea id="message" name="message" required></textarea>
                         </div>
                         <button type="submit" class="btn submit-btn">Send Message</button>
                     </form>
+                    
+                    <div class="form-status" id="form-status">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Message Sent Successfully!</h3>
+                        <p>Thank you for reaching out. I'll get back to you as soon as possible.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1124,7 +1173,7 @@
                 <a href="https://x.com/lnwlfxx" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
                 <a href="https://www.instagram.com/lnwlfx/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
-            <p class="copyright">Made with ❤️ by Naveen Kalapala | DevOps & SRE Engineer</p>
+            <p class="copyright">Kowareta tsubasa demo sora o yume miru / 壊れた翼でも空を夢見る — Naveen Kalapala | DevOps & SRE Engineer</p>
         </div>
     </footer>
 
@@ -1202,14 +1251,6 @@
             element.style.animationDuration = `${randomDuration}s`;
         });
         
-        // Form submission
-        const contactForm = document.querySelector('.contact-form form');
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you for your message! I will get back to you soon.');
-            contactForm.reset();
-        });
-        
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
@@ -1227,6 +1268,54 @@
         // Initialize page with fade-in effect
         document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('fade-in');
+        });
+        
+        // Form submission with Formspree
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+        
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData(contactForm);
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    formStatus.classList.add('active');
+                    contactForm.reset();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        formStatus.classList.remove('active');
+                    }, 5000);
+                } else {
+                    const data = await response.json();
+                    if (data.errors) {
+                        alert(data.errors.map(error => error.message).join(", "));
+                    } else {
+                        alert("Oops! There was a problem submitting your form");
+                    }
+                }
+            } catch (error) {
+                alert("Oops! There was a problem submitting your form");
+            } finally {
+                // Reset button
+                submitBtn.innerHTML = 'Send Message';
+                submitBtn.disabled = false;
+            }
         });
     </script>
 </body>
