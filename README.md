@@ -85,7 +85,7 @@ This project is open-source and available under the MIT License. See the [LICENS
 
 Feel free to reach out to me for any inquiries or collaborations:
 
-- **LinkedIn**: [Naveen Kalapala](https://www.linkedin.com/in/naveenkalapala)
+- **LinkedIn**: [Naveen Kalapala](https://www.linkedin.com/in/naveen-kalapala/)
 - **Email**: [naveenkalapala1252@gmail.com](mailto:naveenkalapala1252@gmail.com)
 
 ---
